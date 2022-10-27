@@ -27,13 +27,16 @@ def Alphabet_URL():
 
 def Album_URL(url):
     album = []
-    page = requests.get(url)
-    soup = bs(page.text,'lxml')
-    for link in soup.find_all('a'):
-        link = link.get('href')
-        if fnmatch.fnmatch(link,'*-mp3-songs'):
+    try:
+        page = requests.get(url)
+        soup = bs(page.text,'lxml')
+        for link in soup.find_all('a'):
+            link = link.get('href')
+            if fnmatch.fnmatch(link,'*-mp3-songs'):
                 #print(link)
                 album.append(link)
+    except ConnectTimeout:
+        pass
     return album
 
 
@@ -59,15 +62,12 @@ class Name:
         return new_texts
  
 
-def Update_Database():
+def Update_Online_Database():
+    album = open('album.txt', 'w', encoding='utf-8')
     for i in tqdm.tqdm(Alphabet_URL()):
-        for h in tqdm.tqdm(Album_URL(i)):
-            for j in Audio_URL(h):
-                #print(j)
-                #name = Name(j)
-                #print(f'Audio: {name.Audio()}')
-                pass
-
+        for j in Album_URL(i):
+            album.write(j+'\n')
+    album.close()
 '''
 url = 'https://new.dming2022.xyz/2016a/bollywood%20mp3/A%20Flying%20Jatt%20(2016)2/A%20Flying%20Jatt%20(2016)%20(320%20Kbps)/01%20-%20A%20Flying%20Jatt%20-%20Title%20Track%20-%20DownloadMing.SE.mp3'
 name = Name(url)

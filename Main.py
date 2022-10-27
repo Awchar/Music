@@ -1,3 +1,4 @@
 import Url
 
-Url.Update_Database()
+
+Url.Update_Online_Database()
